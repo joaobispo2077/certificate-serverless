@@ -15,7 +15,7 @@
   "dependencies": {
     "@middy/core": "^1.5.2",
     "@middy/http-json-body-parser": "^1.5.2",
-    "aws-sdk": "^2.995.0",
+    "aws-sdk": "^2.996.0",
     "chrome-aws-lambda": "^10.1.0",
     "handlebars": "^4.7.7",
     "puppeteer": "^10.4.0",
@@ -29,6 +29,7 @@
     "serverless": "^2.23.0",
     "serverless-dynamodb-local": "^0.2.40",
     "serverless-offline": "^8.2.0",
+    "serverless-s3-local": "^0.6.20",
     "serverless-webpack": "^5.5.4",
     "ts-loader": "^8.0.15",
     "ts-node": "^9.1.1",

@@ -10,16 +10,19 @@ provider:
 
   environment:
     CERTIFICATES_TABLE: ${self:custom.${self:provider.stage}.database.users_certificate.name}
+    CERTIFICATE_BUCKET: ${self:custom.${self:provider.stage}.buckets.users_certificate.name}
 
 plugins:
   - serverless-webpack
-  - serverless-dynamodb-local # serverless dynamodb install
+  - serverless-dynamodb-local
+  - serverless-s3-local
   - serverless-offline
-
-
 custom:
   # serverless-offline:
   #   httpPort: 4000
+  s3:
+    host: localhost
+    directory: /tmp
   webpack:
     webpackConfig: ./webpack.config.js
     includeModules: true
@@ -32,6 +35,9 @@ custom:
       inMemory: true
       migrate: true
   dev:
+    buckets:
+      users_certificate:
+        name: users_certificate_${self:provider.stage}
     database:
       users_certificate:
         name: users_certificate_${self:provider.stage}
@@ -60,3 +66,7 @@ resources:
         KeySchema:
           - AttributeName: id
             KeyType: HASH
+    bucketCertificateUsers:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.${self:provider.stage}.buckets.users_certificate.name}

@@ -4,6 +4,7 @@ import chromium from 'chrome-aws-lambda';
 import path from 'path';
 import fs from 'fs';
 import handlebars from 'handlebars';
+import { s3bucketClient } from "src/utils/s3bucketClient";
 
 interface ICreateCertificate {
   id: string;
@@ -65,7 +66,7 @@ export const handler = async (event) => {
 
   await page.setContent(certificateHTML);
 
-  const { IS_OFFLINE } = process.env;
+  const { IS_OFFLINE, CERTIFICATE_BUCKET } = process.env;
 
   const pdf = await page.pdf({
     format: 'a4',
@@ -77,10 +78,20 @@ export const handler = async (event) => {
 
   await browser.close();
 
+  const certificateBucketPath = `certificates/${id}.pdf`;
+  await s3bucketClient.putObject({
+    Bucket: CERTIFICATE_BUCKET,
+    Key: certificateBucketPath,
+    Body: pdf,
+    ACL: 'public-read',
+    ContentType: 'application/pdf',
+  }).promise();
+
   return {
     statusCode: 201,
     body: JSON.stringify({
       message: "Certificate created successfully",
+      url: `https://${CERTIFICATE_BUCKET}.s3.amazonaws.com/${certificateBucketPath}`,
     }),
   }
 }

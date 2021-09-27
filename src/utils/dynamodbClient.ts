@@ -9,5 +9,5 @@ const offlineOptions = {
 
 console.log('offline',IS_OFFLINE);
 export const document = IS_OFFLINE 
-? new DynamoDB.DocumentClient(offlineOptions)
-: new DynamoDB.DocumentClient();
+  ? new DynamoDB.DocumentClient(offlineOptions)
+  : new DynamoDB.DocumentClient();
