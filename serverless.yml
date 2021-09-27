@@ -6,7 +6,22 @@ provider:
   runtime: nodejs14.x
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
-  versionFunctions: false # to disable function cache
+  versionFunctions: false # to disable function versioning
+
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "s3:*"
+          Resource:
+            - "arn:aws:s3:::*"
+        - Effect: "Allow"
+          Action:
+            - dynamodb:*
+          Resource:
+            - '*'
+
 
   environment:
     CERTIFICATES_TABLE: ${self:custom.${self:provider.stage}.database.users_certificate.name}
@@ -37,10 +52,10 @@ custom:
   dev:
     buckets:
       users_certificate:
-        name: users_certificate_${self:provider.stage}
+        name: users-certificate-${self:provider.stage}
     database:
       users_certificate:
-        name: users_certificate_${self:provider.stage}
+        name: users-certificate-${self:provider.stage}
 
 functions:
   generateCertificate:
@@ -50,6 +65,13 @@ functions:
           path: /certificate
           method: POST
           cors: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+          - dynamodb:PutItem
+        Resource:
+          - arn:aws:dynamodb:${self:provider.stage}:*:table/${self:custom.${self:provider.stage}.database.users_certificate.name}
   verifyCertificate:
     handler: src/functions/verifyCertificate.handler
     events:
@@ -57,7 +79,12 @@ functions:
           path: /certificate/{id}
           method: GET
           cors: true
-
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource:
+          - arn:aws:dynamodb:${self:provider.stage}:*:table/${self:custom.${self:provider.stage}.database.users_certificate.name}
 resources:
   Resources:
     dbCertificateUsers:
