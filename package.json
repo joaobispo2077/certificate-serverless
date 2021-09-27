@@ -4,7 +4,9 @@
   "description": "Serverless aws-nodejs-typescript template",
   "main": "serverless.ts",
   "scripts": {
-    "dev": "serverless offline --stage dev"
+    "deploy": "serverless deploy -v",
+    "dev": "serverless offline --stage dev",
+    "serverless:config": "serverless config credentials --provider aws --key xxxxxxx --secret yyyy"
   },
   "engines": {
     "node": ">=14.15.0"
