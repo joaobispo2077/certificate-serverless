@@ -16,6 +16,8 @@
     "@middy/core": "^1.5.2",
     "@middy/http-json-body-parser": "^1.5.2",
     "aws-sdk": "^2.995.0",
+    "chrome-aws-lambda": "^10.1.0",
+    "handlebars": "^4.7.7",
     "source-map-support": "^0.5.19"
   },
   "devDependencies": {
