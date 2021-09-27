@@ -8,15 +8,18 @@ provider:
   region: ${opt:region, 'us-east-1'}
   versionFunctions: false # to disable function cache
 
+  environment:
+    CERTIFICATES_TABLE: ${self:custom.${self:provider.stage}.database.users_certificate.name}
+
 plugins:
-  - serverless-offline
   - serverless-webpack
   - serverless-dynamodb-local # serverless dynamodb install
+  - serverless-offline
 
 
 custom:
-  serverless-offline:
-    httpPort: 4000
+  # serverless-offline:
+  #   httpPort: 4000
   webpack:
     webpackConfig: ./webpack.config.js
     includeModules: true
@@ -34,12 +37,12 @@ custom:
         name: users_certificate_${self:provider.stage}
 
 functions:
-  hello:
-    handler: src/functions/hello.handler
+  generateCertificate:
+    handler: src/functions/generateCertificate.handler
     events:
       - http:
-          path: /hello
-          method: GET
+          path: /certificate
+          method: POST
           cors: true
 
 resources:

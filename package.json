@@ -5,7 +5,8 @@
   "main": "serverless.ts",
   "scripts": {
     "deploy": "serverless deploy -v",
-    "dev": "serverless offline --stage dev",
+    "dynamo:start": "serverless dynamodb start",
+    "dev": "serverless offline start --stage dev",
     "serverless:config": "serverless config credentials --provider aws --key xxxxxxx --secret yyyy"
   },
   "engines": {
@@ -14,6 +15,7 @@
   "dependencies": {
     "@middy/core": "^1.5.2",
     "@middy/http-json-body-parser": "^1.5.2",
+    "aws-sdk": "^2.995.0",
     "source-map-support": "^0.5.19"
   },
   "devDependencies": {
