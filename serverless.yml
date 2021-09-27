@@ -1,10 +1,26 @@
 service:
   name: certificator
 
+provider: 
+  name: aws
+
 plugins:
   - serverless-offline
   - serverless-webpack
 
+
+custom:
+  serverless-offline:
+    httpPort: 4000
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
+
 functions:
   hello:
-    handler: src/functions/hello.ts
+    handler: src/functions/hello.handler
+    events:
+      - http:
+          path: /hello
+          method: GET
+          cors: true
