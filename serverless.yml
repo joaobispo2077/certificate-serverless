@@ -1,0 +1,10 @@
+service:
+  name: certificator
+
+plugins:
+  - serverless-offline
+  - serverless-webpack
+
+functions:
+  hello:
+    handler: src/functions/hello.ts
