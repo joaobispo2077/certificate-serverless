@@ -33,6 +33,28 @@ export const handler = async (event) => {
   const { id, name, grade } = JSON.parse(event.body) as ICreateCertificate;
 
   console.log(`Creating certificate into ${process.env.CERTIFICATES_TABLE}`);
+
+  const response = await document.query({
+    TableName: process.env.CERTIFICATES_TABLE,
+    KeyConditionExpression: "id = :id",
+    ExpressionAttributeValues: {
+      ":id": id
+    }
+  }).promise();
+
+  const isUserAlreadyExist = await response.Items[0];
+
+  if (isUserAlreadyExist) {
+    return {
+      statusCode: 409,
+      body: JSON.stringify({
+        message: `User with id ${id} already exist`
+      })
+    }
+  };
+
+
+
   await document.put({
     TableName: process.env.CERTIFICATES_TABLE,
     Item: {
