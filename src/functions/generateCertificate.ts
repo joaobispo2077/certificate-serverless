@@ -1,5 +1,5 @@
 import { document } from "src/utils/dynamodbClient";
-// import chromium from 'chrome-aws-lambda';
+import chromium from 'chrome-aws-lambda';
 
 import path from 'path';
 import fs from 'fs';
@@ -53,6 +53,29 @@ export const handler = async (event) => {
   };
 
   const certificateHTML = await compileTemplate(templatePayload);
+
+  const browser = await chromium.puppeteer.launch({
+    headless: true,
+    args: chromium.args,
+    defaultViewport: chromium.defaultViewport,
+    executablePath: await chromium.executablePath,
+  });
+
+  const page = await browser.newPage();
+
+  await page.setContent(certificateHTML);
+
+  const { IS_OFFLINE } = process.env;
+
+  const pdf = await page.pdf({
+    format: 'a4',
+    landscape: true,
+    path: IS_OFFLINE ?  'certificates.pdf' : null,
+    printBackground: true,
+    preferCSSPageSize: true,
+  });
+
+  await browser.close();
 
   return {
     statusCode: 201,
